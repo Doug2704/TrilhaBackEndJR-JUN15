@@ -1,6 +1,8 @@
 package com.candido.trilhaBackEndJR_JUN15.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -9,18 +11,20 @@ import jakarta.persistence.Table;
 public class Task {
 
 	@Id
-	private int id;
+	private Long id;
 	private String name;
+
+	@Enumerated(EnumType.STRING)
 	private Status status;
 
 	public Task() {
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

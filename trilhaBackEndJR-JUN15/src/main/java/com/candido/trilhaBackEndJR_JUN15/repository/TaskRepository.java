@@ -11,5 +11,4 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 	public Task findById(Long Id);
 
 	public Task findByName(String name);
-
 }
