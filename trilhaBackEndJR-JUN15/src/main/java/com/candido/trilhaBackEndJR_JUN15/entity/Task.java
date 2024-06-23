@@ -36,7 +36,7 @@ public class Task {
 		return status;
 	}
 
-	public void setStatus(String email) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
