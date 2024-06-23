@@ -13,7 +13,7 @@ public class TaskController {
 	@Autowired
 	private TaskRepository taskRepository;
 
-	@PostMapping("/")
+	@PostMapping("/task")
 	public String saveTask(@RequestBody Task task) {
 		try {
 			taskRepository.save(task);
