@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.candido.trilhaBackEndJR_JUN15.entity.task.Status;
 import com.candido.trilhaBackEndJR_JUN15.entity.task.Task;
+import com.candido.trilhaBackEndJR_JUN15.entity.user.User;
 import com.candido.trilhaBackEndJR_JUN15.repository.TaskRepository;
+import com.candido.trilhaBackEndJR_JUN15.repository.UserRepository;
 
 @RestController
 public class TaskController {
 	@Autowired
 	private TaskRepository taskRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@PostMapping("/task/save")
 	public String saveTask(@RequestBody Task task) {
@@ -26,7 +30,15 @@ public class TaskController {
 			if (existsByName != null && existsByName.getName().equals(task.getName())) {
 				return "Já existe uma tarefa com esse nome";
 			}
+			if (task.getUser() != null) {
+				User user = userRepository.findByUsername(task.getUser().getUsername());
+				if (user != null) {
+					task.setUser(user);
+				} else {
+					return "Usuário não encontrado";
 
+				}
+			}
 			taskRepository.save(task);
 			return "Tarefa salva";
 
@@ -86,11 +98,11 @@ public class TaskController {
 			taskRepository.save(task);
 			return "Tarefa atualizada";
 		} catch (Exception e) {
-			return "erro ao criar tarefa: " + e.getMessage();
+			return "erro ao atualizar tarefa: " + e.getMessage();
 		}
 	}
 
-	@PostMapping("task/delete/{id}")
+	@PostMapping("/task/delete/{id}")
 	public String deleteTaskById(@PathVariable String id) {
 		Optional<Task> task = taskRepository.findById(id);
 		try {
@@ -101,6 +113,17 @@ public class TaskController {
 			return "Tarefa apagada";
 		} catch (Exception e) {
 			return "erro ao apagar tarefa: " + e.getMessage();
+		}
+	}
+
+	@GetMapping("/task/user/{username}")
+	public List<Task> findAllByUser(@PathVariable String username) {
+		try {
+			User user = userRepository.findByUsername(username);
+
+			return user.getTasks();
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao consultar tarefas", e);
 		}
 	}
 

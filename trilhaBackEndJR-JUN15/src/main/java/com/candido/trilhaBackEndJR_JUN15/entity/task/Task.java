@@ -1,5 +1,8 @@
 package com.candido.trilhaBackEndJR_JUN15.entity.task;
 
+import com.candido.trilhaBackEndJR_JUN15.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import com.candido.trilhaBackEndJR_JUN15.entity.user.User;
 
 @Entity
 @Table(name = "tb_task")
@@ -24,6 +26,7 @@ public class Task {
 	private Status status;
 
 	@ManyToOne
+	@JsonBackReference //essa anotação evita um loop na consulta
 	private User user;
 
 	public Task() {
