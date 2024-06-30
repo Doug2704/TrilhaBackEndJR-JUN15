@@ -68,7 +68,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/user/update/{id}")
+	@PostMapping("/user/update/{username}")
 	public String updateUserById(@RequestBody User user) {
 		try {
 
