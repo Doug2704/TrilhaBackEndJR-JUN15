@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 public class Task {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
 
 	private String name;
