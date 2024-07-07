@@ -23,12 +23,12 @@ public class TaskController {
     public String saveTask(@PathVariable String user_id, @RequestBody Task task) {
         try {
             Optional<User> user = userRepository.findById(user_id);
-            if(user.isEmpty()){
+            if (user.isEmpty()) {
                 return "Usuário não encontrado";
             }
             task.setUser(user.orElse(null));
             Task existsByName = taskRepository.findByName(task.getName());
-          //criar lógica para validar se tem apenas no usuario e nao em todos
+            //criar lógica para validar se tem apenas no usuario e nao em todos
             if (existsByName != null && existsByName.getName().equals(task.getName())) {
                 return "Já existe uma tarefa com esse nome";
             }
@@ -47,6 +47,7 @@ public class TaskController {
     public Optional<Task> findById(@PathVariable String id) {
         try {
             Optional<Task> task = taskRepository.findById(id);
+
             return task;
         } catch (Exception e) {
             throw new RuntimeException("erro ao buscar tarefa: ", e);
@@ -90,7 +91,9 @@ public class TaskController {
     public List<Task> findAllByUser(@PathVariable String username) {
         try {
             User user = userRepository.findByUsername(username);
-
+            if (user != null) {
+                return null;
+            }
             return user.getTasks();
         } catch (Exception e) {
             throw new RuntimeException("Erro ao consultar tarefas", e);
@@ -108,7 +111,7 @@ public class TaskController {
         }
     }
 
-    @PostMapping("/task/delete/{id}")
+    @DeleteMapping("/task/delete/{id}")
     public String deleteTaskById(@PathVariable String id) {
         Optional<Task> task = taskRepository.findById(id);
         try {
