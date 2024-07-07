@@ -3,64 +3,61 @@ package com.candido.trilhaBackEndJR_JUN15.entity.task;
 import com.candido.trilhaBackEndJR_JUN15.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_task")
 public class Task {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
-	private String name;
 
-	@Enumerated(EnumType.STRING)
-	private Status status;
+    @Column(nullable = false)
+    private String name;
 
-	@ManyToOne
-	@JsonBackReference //essa anotação evita um loop na consulta
-	private User user;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
-	public Task() {
-	}
+    @ManyToOne
+    @JsonBackReference //essa anotação evita um loop na consulta
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-	public String getId() {
-		return id;
-	}
+    public Task() {
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Status getStatus() {
-		return status;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+    public Status getStatus() {
+        return status;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
