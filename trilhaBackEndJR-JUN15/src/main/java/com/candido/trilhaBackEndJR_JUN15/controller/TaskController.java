@@ -26,12 +26,19 @@ public class TaskController {
             if (user.isEmpty()) {
                 return "Usuário não encontrado";
             }
-            task.setUser(user.orElse(null));
-            Task existsByName = taskRepository.findByName(task.getName());
-            //criar lógica para validar se tem apenas no usuario e nao em todos
-            if (existsByName != null && existsByName.getName().equals(task.getName())) {
-                return "Já existe uma tarefa com esse nome";
+            List<Task> tasks = taskRepository.findAllByUser(user.get());
+            for (Task t : tasks) {
+                if (task.getName().equals(t.getName())) {
+                    return "Já existe uma tarefa com esse nome";
+                }
             }
+
+            task.setUser(user.orElse(null));
+            // Task existsByName = taskRepository.findByName(task.getName());
+            //criar lógica para validar se tem apenas no usuario e nao em todos
+          /*  if (existsByName != null && existsByName.getName().equals(task.getName())) {
+                return "Já existe uma tarefa com esse nome";
+            }*/
 
             taskRepository.save(task);
             return "Tarefa salva";
@@ -53,19 +60,6 @@ public class TaskController {
             throw new RuntimeException("erro ao buscar tarefa: ", e);
         }
 
-    }
-
-    @GetMapping("/task/name/{name}")
-    public Task findByName(@PathVariable String name) {
-        try {
-            Task task = taskRepository.findByName(name);
-            if (task == null) {
-                return null;
-            }
-            return task;
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar tarefa: ", e);
-        }
     }
 
     @GetMapping("/task")
