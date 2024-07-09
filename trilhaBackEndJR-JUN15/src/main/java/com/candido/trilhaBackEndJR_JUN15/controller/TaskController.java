@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.candido.trilhaBackEndJR_JUN15.entity.task.Status;
@@ -34,12 +36,6 @@ public class TaskController {
             }
 
             task.setUser(user.orElse(null));
-            // Task existsByName = taskRepository.findByName(task.getName());
-            //criar lógica para validar se tem apenas no usuario e nao em todos
-          /*  if (existsByName != null && existsByName.getName().equals(task.getName())) {
-                return "Já existe uma tarefa com esse nome";
-            }*/
-
             taskRepository.save(task);
             return "Tarefa salva";
 
@@ -54,7 +50,9 @@ public class TaskController {
     public Optional<Task> findById(@PathVariable String id) {
         try {
             Optional<Task> task = taskRepository.findById(id);
-
+            if (task.isEmpty()) {
+                return null;
+            }
             return task;
         } catch (Exception e) {
             throw new RuntimeException("erro ao buscar tarefa: ", e);
@@ -74,31 +72,37 @@ public class TaskController {
     @GetMapping("/task/status/{status}")
     public List<Task> findAllByStatus(@PathVariable Status status) {
         try {
-            List<Task> tasks = taskRepository.findAllByStatus(status);
-            return tasks;
+            return taskRepository.findAllByStatus(status);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao consultar tarefas: " + status, e);
         }
     }
 
     @GetMapping("/task/user/{username}")
-    public List<Task> findAllByUser(@PathVariable String username) {
+    public ResponseEntity findAllByUser(@PathVariable String username) {
         try {
             User user = userRepository.findByUsername(username);
-            if (user != null) {
-                return null;
+            if (user == null) {
+                return new ResponseEntity<>("Usuário inexistente", HttpStatus.NOT_FOUND);
             }
-            return user.getTasks();
+            return new ResponseEntity(user.getTasks(), HttpStatus.OK);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao consultar tarefas", e);
         }
     }
 
-    @PostMapping("/task/update/{id}")
+    @PutMapping("/task/update/{id}")
     public String updateTaskById(@PathVariable String id, @RequestBody Task task) {
         try {
-            task.setId(id);
-            taskRepository.save(task);
+            Optional<Task> retrievedTaskById = findById(id);
+            if (retrievedTaskById == null) {
+                return "Tarefa inexistente";
+            }
+            retrievedTaskById.get().setName(task.getName());
+            retrievedTaskById.get().setStatus(task.getStatus());
+            // retrievedTaskById.setUser(task.getUser());
+            taskRepository.save(retrievedTaskById.get());
+
             return "Tarefa atualizada";
         } catch (Exception e) {
             return "erro ao atualizar tarefa: " + e.getMessage();
