@@ -3,25 +3,31 @@ package com.candido.trilhaBackEndJR_JUN15.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.candido.trilhaBackEndJR_JUN15.entity.user.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import com.candido.trilhaBackEndJR_JUN15.entity.user.User;
 import com.candido.trilhaBackEndJR_JUN15.repository.UserRepository;
 
 @RestController
+
 public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    //refactor: put those methods on the service package, just to call from the services
     @PostMapping("/user/save")
     public String saveUser(@RequestBody User user) {
         try {
-            User existsByName = userRepository.findByUsername(user.getUsername());
+            User existsByName = (User) userRepository.findByUsername(user.getUsername());
             if (existsByName != null && existsByName.getUsername().equals(user.getUsername())) {
                 return "Já existe um usuário com esse nome";
             }
-
+            user.setRole(Role.USER);
+            String encryptedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            user.setPassword(encryptedPassword);
             userRepository.save(user);
             return "Usuário salvo";
 
@@ -45,7 +51,7 @@ public class UserController {
     @GetMapping("/user/name/{username}")
     public User findByName(@PathVariable String username) {
         try {
-            User user = userRepository.findByUsername(username);
+            User user = (User) userRepository.findByUsername(username);
             if (user == null) {
                 return null;
             }
@@ -68,7 +74,7 @@ public class UserController {
     public String updateUserById(@PathVariable String id, @RequestBody User user) {
         try {
             user.setId(id);
-            User existsByName = userRepository.findByUsername(user.getUsername());
+            User existsByName = (User) userRepository.findByUsername(user.getUsername());
             if (existsByName != null && existsByName.getUsername().equals(user.getUsername())) {
                 return "Já existe um usuário com esse nome";
             }

@@ -81,7 +81,7 @@ public class TaskController {
     @GetMapping("/task/user/{username}")
     public ResponseEntity findAllByUser(@PathVariable String username) {
         try {
-            User user = userRepository.findByUsername(username);
+            User user = (User) userRepository.findByUsername(username);
             if (user == null) {
                 return new ResponseEntity<>("Usuário inexistente", HttpStatus.NOT_FOUND);
             }
