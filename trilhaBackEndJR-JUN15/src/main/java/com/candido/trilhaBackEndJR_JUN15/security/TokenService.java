@@ -25,7 +25,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("Todo List")
                     .withSubject(user.getUsername())
-                    .withExpiresAt(exprirationToken())
+                    .withExpiresAt(expirationToken())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new SecurityException("Erro ao gerar token jwt", exception);
@@ -45,7 +45,7 @@ public class TokenService {
         }
     }
 
-    private Instant exprirationToken() {
+    private Instant expirationToken() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
