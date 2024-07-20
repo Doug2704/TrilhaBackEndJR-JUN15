@@ -55,8 +55,8 @@ Este é um projeto feito em Java com Sprigboot para a trilha  BackEnd da Codigo 
       "username": "string",
       "password": "string"
     }
-     Resposta: JSON contendo um token JWT se as credenciais forem válidas.
-    ```
+     
+    ``` Resposta: JSON contendo um token JWT se as credenciais forem válidas.
   - **OBS.:** Para os próximos métodos, deve-se escolher o tipo de autentiação "bearer token" e inserir o token JWT gerado no login (o token expira 2 horas depois de gerado).
 
 ### Usuários (CRUD)
@@ -97,10 +97,9 @@ Este é um projeto feito em Java com Sprigboot para a trilha  BackEnd da Codigo 
     ```json
     {
       "name": "string",
-      "status": "pending / in_progress / complete" (só é permitido um desses três)
+      "status": "pending / in_progress / complete" 
     }
-    ```
-
+    ``` (só é permitido um desses três)
 - **Ver todas as Tarefas**
   - **Método:** `GET`
   - **URL:** `/task`
